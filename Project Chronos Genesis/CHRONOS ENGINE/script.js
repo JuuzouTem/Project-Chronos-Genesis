@@ -215,6 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- OLAY DİNLEYİCİLERİ ---
+    startBtn.addEventListener('click', startSimulation);
+    resetBtn.addEventListener('click', resetSimulation);
+
+    // --- BAŞLANGIÇ ---
+    initializeSimulation();
+
 if (window.opener) {
     window.opener.postMessage({ tool: 'CHRONOS_ENGINE', status: 'success' }, '*');
 }
@@ -223,10 +230,4 @@ if (window.opener) {
 isSimulationRunning = false;
 startButton.disabled = false;
 
-    // --- OLAY DİNLEYİCİLERİ ---
-    startBtn.addEventListener('click', startSimulation);
-    resetBtn.addEventListener('click', resetSimulation);
-
-    // --- BAŞLANGIÇ ---
-    initializeSimulation();
 });
