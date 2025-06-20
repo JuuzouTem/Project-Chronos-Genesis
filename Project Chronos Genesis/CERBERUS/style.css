@@ -1,0 +1,206 @@
+:root {
+    --primary-color: #00aaff;
+    --secondary-color: #00ffdd;
+    --error-color: #ff4d4d;
+    --success-color: #4dff88;
+    --bg-color: #0a0f18;
+    --panel-bg-color: #111827;
+    --text-color: #e0e0e0;
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'Roboto Mono', monospace;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Arkaplan tarama çizgisi efekti */
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 1px, transparent 1px, transparent 2px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.cerberus-interface {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 25px rgba(0, 170, 255, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    border-bottom: 1px solid var(--primary-color);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    margin: 0;
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+header h2 {
+    font-family: var(--font-heading);
+    color: var(--secondary-color);
+    margin: 5px 0 10px 0;
+    font-size: 1.2em;
+}
+
+.formula {
+    font-size: 0.9em;
+    color: var(--secondary-color);
+    opacity: 0.8;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px;
+}
+
+.panel {
+    background-color: var(--panel-bg-color);
+    border: 1px solid rgba(0, 170, 255, 0.2);
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.panel h3 {
+    margin-top: 0;
+    font-family: var(--font-heading);
+    color: var(--secondary-color);
+    border-bottom: 1px solid rgba(0, 255, 221, 0.2);
+    padding-bottom: 10px;
+}
+
+.dna-display-container { grid-column: 1 / 2; grid-row: 1 / 2; }
+.control-panel { grid-column: 2 / 3; grid-row: 1 / 2; }
+.log-console { grid-column: 1 / 3; grid-row: 2 / 3; }
+.system-status-container { grid-column: 1 / 3; grid-row: 3 / 4; }
+
+.dna-sequence { margin-bottom: 15px; }
+.dna-sequence label { display: block; margin-bottom: 5px; font-size: 0.9em; opacity: 0.7; }
+.dna-sequence code { font-size: 1.2em; letter-spacing: 2px; }
+
+.base-error { color: var(--error-color); font-weight: bold; text-shadow: 0 0 8px var(--error-color); }
+.base-correct { color: var(--success-color); font-weight: bold; text-shadow: 0 0 8px var(--success-color); }
+.base-modified { color: var(--success-color); font-weight: bold; text-shadow: 0 0 8px var(--success-color); animation: pulse 1s infinite; }
+
+#startButton {
+    width: 100%;
+    padding: 15px;
+    font-family: var(--font-heading);
+    font-size: 1.1em;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    margin-bottom: 20px;
+}
+
+#startButton:hover {
+    background-color: var(--secondary-color);
+    box-shadow: 0 0 15px var(--secondary-color);
+}
+
+#startButton:disabled {
+    background-color: #555;
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.steps-container { display: flex; flex-direction: column; gap: 10px; }
+.step { display: flex; align-items: center; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 4px; border-left: 3px solid #555; transition: all 0.5s ease; }
+.step-icon { width: 12px; height: 12px; border-radius: 50%; background-color: #555; margin-right: 10px; transition: all 0.5s ease; }
+.step-name { flex-grow: 1; }
+.step-status { font-size: 0.9em; font-style: italic; }
+
+/* Adım Durumları */
+.step.running { border-left-color: orange; }
+.step.running .step-icon { background-color: orange; animation: pulse 1.5s infinite; }
+.step.success { border-left-color: var(--success-color); }
+.step.success .step-icon { background-color: var(--success-color); }
+.step.error { border-left-color: var(--error-color); }
+.step.error .step-icon { background-color: var(--error-color); }
+
+
+#log-output {
+    height: 150px;
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 0.9em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.log-info { color: var(--text-color); }
+.log-success { color: var(--success-color); }
+.log-error { color: var(--error-color); }
+.log-warning { color: orange; }
+.log-system { color: var(--primary-color); font-weight: bold; }
+
+.system-status-container { display: flex; justify-content: space-around; gap: 15px; }
+.system-status { text-align: center; }
+.status-light-container { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; }
+.status-light { width: 15px; height: 15px; border-radius: 50%; transition: all 0.5s ease; }
+.status-light.offline { background-color: #555; }
+.status-light.calibrating { background-color: orange; animation: pulse 1.5s infinite; }
+.status-light.online { background-color: var(--success-color); box-shadow: 0 0 10px var(--success-color); }
+.status-text { font-size: 0.9em; }
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.8em;
+    opacity: 0.6;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* Mobil Cihazlar İçin */
+@media (max-width: 768px) {
+    main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+    .dna-display-container, .control-panel, .log-console, .system-status-container {
+        grid-column: auto;
+        grid-row: auto;
+    }
+    .system-status-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

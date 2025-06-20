@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAIA POD - Yapay Rahim Simülasyonu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="simulation-container">
+        <!-- GAIA POD'un görsel temsili -->
+        <div id="gaia-pod">
+            <div class="pod-shine"></div>
+            <div class="pod-core-glow"></div>
+        </div>
+
+        <!-- Holografik Veri Arayüzü -->
+        <div id="interface">
+            <header>
+                <h1>GAIA POD // MATERNAL AI ARAYÜZÜ</h1>
+                <div id="system-status" class="status-optimal">SİSTEM DURUMU: OPTİMAL</div>
+            </header>
+
+            <main id="vitals-grid">
+                <div class="vital-panel" id="vital-o2">
+                    <label>O₂ Doygunluğu</label>
+                    <div class="value-container">
+                        <span class="value">99.5</span><span class="unit">%</span>
+                    </div>
+                    <div class="bar-container"><div class="bar"></div></div>
+                </div>
+                <div class="vital-panel" id="vital-glucose">
+                    <label>Glikoz Seviyesi</label>
+                    <div class="value-container">
+                        <span class="value">85.2</span><span class="unit">mg/dL</span>
+                    </div>
+                    <div class="bar-container"><div class="bar"></div></div>
+                </div>
+                <div class="vital-panel" id="vital-neural">
+                    <label>Nöral Senkronizasyon</label>
+                    <div class="value-container">
+                        <span class="value">98.9</span><span class="unit">%</span>
+                    </div>
+                    <div class="bar-container"><div class="bar"></div></div>
+                </div>
+                 <div class="vital-panel" id="vital-hormone">
+                    <label>Büyüme Hormonu</label>
+                    <div class="value-container">
+                        <span class="value">12.4</span><span class="unit">ng/mL</span>
+                    </div>
+                    <div class="bar-container"><div class="bar"></div></div>
+                </div>
+                 <div class="vital-panel" id="vital-amnio">
+                    <label>Amniyotik Basınç</label>
+                    <div class="value-container">
+                        <span class="value">10.1</span><span class="unit">mmHg</span>
+                    </div>
+                    <div class="bar-container"><div class="bar"></div></div>
+                </div>
+                 <div class="vital-panel" id="vital-heartbeat">
+                    <label>Fetal Kalp Atışı</label>
+                    <div class="value-container">
+                        <span class="value">145</span><span class="unit">bpm</span>
+                    </div>
+                    <div class="bar-container"><div class="bar"></div></div>
+                </div>
+            </main>
+
+            <footer>
+                <div id="ai-log-container">
+                    <h2>MATERNAL AI GÜNLÜĞÜ</h2>
+                    <div id="ai-log">
+                        <p class="log-entry system">[Sistem Başlatıldı] Maternal AI aktif. Tüm parametreler nominal.</p>
+                    </div>
+                </div>
+                <button id="trigger-anomaly">ANOMALİ SİMÜLE ET</button>
+            </footer>
+        </div>
+    </div>
+    
+    <!-- Arka plan sesleri -->
+    <audio id="heartbeat-sound" src="https://www.soundjay.com/human/heartbeat-01a.mp3" loop></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MORPHEUS LENS Simülatörü</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="morpheus-container">
+        <header>
+            <h1>MORPHEUS LENS</h1>
+            <h2>Hassas Nöro-Epigenetik Programlama Simülatörü</h2>
+        </header>
+
+        <main class="interface">
+            <!-- KONTROL PANELİ -->
+            <div class="control-panel">
+                <h3><span class="icon">⚙️</span>Kontrol Paneli</h3>
+                
+                <div class="control-group">
+                    <label for="behavior-select">1. Hedef Davranış Kalıbı:</label>
+                    <select id="behavior-select">
+                        <option value="Stres Tepkisi">Stres Tepkisi (Amygdala)</option>
+                        <option value="Empati">Empati (Anterior Insular Cortex)</option>
+                        <option value="Odaklanma">Odaklanma (Prefrontal Cortex)</option>
+                        <option value="Hafıza Erişimi">Hafıza Erişimi (Hippocampus)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>2. Modülasyon Tipi:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="mod-silence" name="modulation_type" value="Susturma" checked>
+                        <label for="mod-silence">Sustur (Metilasyon)</label>
+                        <input type="radio" id="mod-enhance" name="modulation_type" value="Güçlendirme">
+                        <label for="mod-enhance">Güçlendir (Asetilasyon)</label>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label for="intensity-slider">3. Modülasyon Yoğunluğu (%):</label>
+                    <input type="range" id="intensity-slider" min="10" max="100" value="75">
+                    <span id="intensity-value">75%</span>
+                </div>
+
+                <button id="initiate-procedure">PROSEDÜRÜ BAŞLAT</button>
+            </div>
+
+            <!-- GÖRSELLEŞTİRME VE LOG EKRANI -->
+            <div class="visualizer-section">
+                <h3><span class="icon">🧠</span>Gerçek-Zamanlı Görselleştirme</h3>
+                <div class="visualizer">
+                    <div id="brain-map">
+                        <!-- Nöronlar JS ile buraya eklenecek -->
+                        <div id="nanobot-stream"></div>
+                    </div>
+                    <div id="status-overlay">SİSTEM BEKLEMEDE</div>
+                </div>
+                
+                <div class="status-log">
+                    <h4><span class="icon">📋</span>Sistem Logu & Durum</h4>
+                    <div id="log-output">
+                        <p class="log-system">MORPHEUS LENS arayüzü başlatıldı. Prosedür için komut bekleniyor...</p>
+                    </div>
+                </div>
+                
+                <div class="results-display" id="results-display">
+                    <h4>Sonuç Formülasyonu:</h4>
+                    <p class="formula">ΔB(t) ≈ f(Σ Eₚ(n, t))</p>
+                    <p id="result-text"></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

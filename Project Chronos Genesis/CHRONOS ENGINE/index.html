@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHRONOS ENGINE - Gelişim Simülasyonu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>CHRONOS ENGINE</h1>
+            <p>Gelişimsel Biyoloji Zamanlama Kontrol Protokolü</p>
+        </header>
+
+        <main>
+            <div class="main-panel">
+                <!-- Sol Panel: Görsel ve Durum -->
+                <div class="left-panel">
+                    <h2>GAIA POD MONİTÖRÜ</h2>
+                    <div class="visual-container">
+                        <svg id="fetus-svg" viewBox="0 0 200 300">
+                            <!-- Bu SVG, gelişimin stilize bir temsilidir -->
+                            <g id="base-form" class="organ-group">
+                                <path d="M100,280 C60,280 40,240 40,200 S60,120 100,120 S160,160 160,200 S140,280 100,280 Z" />
+                                <path d="M100,120 C80,120 70,80 100,50 C130,80 120,120 100,120 Z" />
+                            </g>
+                            <g id="organ-nervous" class="organ-group">
+                                <path d="M100,55 C120,70 125,90 120,110 M100,55 C80,70 75,90 80,110 M100,125 L100,240 M80,180 H120"/>
+                            </g>
+                            <g id="organ-cardiovascular" class="organ-group">
+                                <path d="M100,150 C90,140 80,145 80,155 C80,170 100,180 100,180 S120,170 120,155 C120,145 110,140 100,150 Z" />
+                            </g>
+                            <g id="organ-skeletal" class="organ-group">
+                                <path d="M100,120 L100,270 M80,160 L60,220 M120,160 L140,220 M85,130 L65,150 M115,130 L135,150"/>
+                            </g>
+                            <g id="organ-respiratory" class="organ-group">
+                                 <path d="M90,185 C80,195 80,210 90,215 M110,185 C120,195 120,210 110,215"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="status-panel">
+                        <h3>Sistem Durumu</h3>
+                        <div class="status-item">
+                            <span>Gelişim Günü:</span>
+                            <strong id="day-counter">0 / 45</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Aktif Faz:</span>
+                            <strong id="phase-name">BAŞLATILMADI</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>Hücre Sayısı:</span>
+                            <strong id="cell-count">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span>DNA Bütünlüğü:</span>
+                            <strong id="dna-integrity">100%</strong>
+                        </div>
+                         <div class="status-item telomerase-status">
+                            <span>Telomeraz Aktivatörü:</span>
+                            <strong id="telomerase-status">PASİF</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ Panel: Bağımlılık Ağacı -->
+                <div class="right-panel">
+                    <h2>BİYOKİMYASAL GÖREV AKIŞI (Bağımlılık Ağacı)</h2>
+                    <div id="dependency-tree" class="dependency-tree">
+                        <!-- Görevler buraya JS ile eklenecek -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn">Simülasyonu Başlat</button>
+                <button id="reset-btn">Sıfırla</button>
+            </div>
+             <div id="completion-message" class="completion-message">
+                <h3>PROTOKOL TAMAMLANDI</h3>
+                <p>Gelişim 45 günde başarıyla sonuçlandı. Biyolojik ünite stabil ve canlı.</p>
+                <p><strong>CHRONOS ENGINE:</strong> Doğanın 9 ayı, mühendisliğin 45 günü.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

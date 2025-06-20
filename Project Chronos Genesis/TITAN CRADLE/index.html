@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITAN CRADLE Simülasyonu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="simulation-container">
+        <header>
+            <h1>TITAN CRADLE // Hızlandırılmış Biyolojik Olgunlaşma Simülatörü</h1>
+            <p>Kod Adı: TITAN CRADLE - Fiziksel Yetişkinliğe Geçiş Protokolü</p>
+        </header>
+
+        <main id="main-interface">
+            <div id="visualizer">
+                <div id="cradle-pod">
+                    <div class="pod-glass"></div>
+                    <div id="bio-gel">
+                        <!-- CSS ile oluşturulan baloncuklar buraya gelecek -->
+                    </div>
+                    <div id="human-silhouette">
+                        <div id="exo-frame">
+                            <div class="exo-line leg-l"></div>
+                            <div class="exo-line leg-r"></div>
+                            <div class="exo-line torso"></div>
+                            <div class="exo-line arm-l"></div>
+                            <div class="exo-line arm-r"></div>
+                            <div class="exo-line head"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="status-display">
+                    SİSTEM DURUMU: <span id="system-status">BEKLEMEDE</span>
+                </div>
+            </div>
+
+            <div id="control-panel">
+                <h2>Birey Verileri</h2>
+                <div class="stat-item">
+                    <span>Fiziksel Yaş</span>
+                    <span id="stat-age" class="value">1.0 yıl</span>
+                </div>
+                <div class="stat-item">
+                    <span>Boy</span>
+                    <span id="stat-height" class="value">75 cm</span>
+                </div>
+                <div class="stat-item">
+                    <span>Kütle</span>
+                    <span id="stat-mass" class="value">9.5 kg</span>
+                </div>
+
+                <h2>Biyometrik Analiz</h2>
+                <div class="stat-item progress-stat">
+                    <span>Kas Kütlesi</span>
+                    <div class="progress-bar-container">
+                        <div id="progress-muscle" class="progress-bar"></div>
+                    </div>
+                </div>
+                <div class="stat-item progress-stat">
+                    <span>Kemik Yoğunluğu</span>
+                    <div class="progress-bar-container">
+                        <div id="progress-bone" class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <h2>Sistem Parametreleri</h2>
+                <div class="stat-item">
+                    <span>Metabolik Hız</span>
+                    <span id="stat-metabolism" class="value">100%</span>
+                </div>
+                <div class="stat-item">
+                    <span>Büyüme H. (GH) Salınımı</span>
+                    <span id="stat-gh" class="value">DÜŞÜK</span>
+                </div>
+                <div class="stat-item">
+                    <span>Onarım Faktörleri</span>
+                    <span id="stat-repair" class="value">AKTİF</span>
+                </div>
+
+                <div id="controls">
+                    <button id="start-btn">Protokolü Başlat</button>
+                    <button id="pause-btn" disabled>Duraklat</button>
+                    <button id="reset-btn" disabled>Sıfırla</button>
+                </div>
+            </div>
+        </main>
+
+        <footer id="system-log">
+            <h3>Sistem Günlüğü // Protokol Akışı</h3>
+            <ul id="log-list">
+                <li>Simülasyon başlatılmaya hazır.</li>
+            </ul>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

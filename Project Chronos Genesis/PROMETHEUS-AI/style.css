@@ -1,0 +1,347 @@
+:root {
+    --primary-color: #00ffff; /* Cyan */
+    --secondary-color: #39ff14; /* Neon Green */
+    --bg-color: #0a0a1a;
+    --panel-bg-color: rgba(10, 30, 50, 0.8);
+    --border-color: rgba(0, 255, 255, 0.4);
+    --text-color: #e0e0e0;
+    --font-main: 'Orbitron', sans-serif;
+    --font-mono: 'Roboto Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-mono);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    overflow: hidden;
+}
+
+/* Arka plan animasyonu */
+.scanline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    z-index: -1;
+    animation: scanline 15s linear infinite;
+}
+
+@keyframes scanline {
+    from { background-position: 0 0; }
+    to { background-position: 0 100vh; }
+}
+
+#container {
+    width: 100%;
+    max-width: 1400px;
+    z-index: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 1rem;
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+header h1 {
+    font-family: var(--font-main);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    letter-spacing: 5px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+
+.formula {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+}
+
+.panel {
+    background: var(--panel-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+#control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#control-panel h2, .stage-panel h3, #results-panel h2 {
+    font-family: var(--font-main);
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"] {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 10px;
+    font-family: var(--font-mono);
+    border-radius: 4px;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+button {
+    background: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 12px 20px;
+    font-family: var(--font-main);
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+button:hover {
+    box-shadow: 0 0 15px var(--primary-color);
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background: #555;
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+#simulation-stages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.stage-panel {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.stage-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.status-text {
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    min-height: 20px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+    border-radius: 4px;
+    height: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--secondary-color);
+    border-radius: 4px;
+    transition: width 0.5s linear;
+    box-shadow: 0 0 8px var(--secondary-color);
+}
+
+pre {
+    background: #000;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    height: 100px;
+    overflow-y: auto;
+    border: 1px solid #333;
+}
+
+/* Sanal Evrim Görselleştirmesi */
+#cell-simulation-vis {
+    width: 150px;
+    height: 150px;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 15px auto;
+    position: relative;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, rgba(0, 255, 255, 0) 70%);
+    animation: pulse 2s infinite ease-in-out;
+}
+.cell-nucleus {
+    width: 40px;
+    height: 40px;
+    background: var(--secondary-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    line-height: 40px;
+    font-size: 0.7rem;
+    color: var(--bg-color);
+    box-shadow: 0 0 10px var(--secondary-color);
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px var(--primary-color); }
+    50% { box-shadow: 0 0 20px var(--primary-color); }
+    100% { box-shadow: 0 0 5px var(--primary-color); }
+}
+
+/* Entegrasyon Haritası */
+.genome-map { padding: 10px 0; }
+.chromosome {
+    height: 30px;
+    background: #334;
+    border-radius: 15px;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+.band { height: 100%; flex-grow: 1; }
+.band.alt { background: #556; }
+.insertion-point {
+    background: var(--secondary-color);
+    flex-grow: 0.2 !important;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--secondary-color);
+    animation: blink-insertion 1s infinite;
+}
+.insertion-point .tooltip {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.insertion-point:hover .tooltip { visibility: visible; opacity: 1; }
+@keyframes blink-insertion {
+    50% { background: #fff; }
+}
+
+
+/* Sonuç Paneli */
+#results-panel { opacity: 0; transition: opacity 1s ease; }
+#results-panel.visible { opacity: 1; }
+.results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.protein-viewer-container {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    border: 1px solid var(--border-color);
+    background: #000;
+}
+#final-gene-code { height: 250px; }
+#gene-properties {
+    list-style: none;
+    margin-top: 10px;
+}
+#gene-properties li {
+    padding: 5px;
+    border-bottom: 1px dashed rgba(255,255,255,0.2);
+}
+
+/* Log Konsolu */
+#log-console {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    border-radius: 0;
+    border-top: 2px solid var(--primary-color);
+}
+.log-header {
+    font-family: var(--font-main);
+    color: var(--primary-color);
+    padding-bottom: 5px;
+}
+#log-output {
+    height: 120px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    padding-right: 10px;
+}
+#log-output p {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+.log-info { color: #e0e0e0; }
+.log-success { color: var(--secondary-color); }
+.log-warning { color: #ffd700; }
+.log-process { color: var(--primary-color); }
+
+/* Scrollbar stili */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #222; }
+::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #00dddd; }
+
+@media (max-width: 900px) {
+    #simulation-stages, .results-grid {
+        grid-template-columns: 1fr;
+    }
+}

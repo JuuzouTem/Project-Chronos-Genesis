@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CERBERUS Projesi Simülasyonu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="cerberus-interface">
+        <header>
+            <h1>Genom Bütünlüğü Güvence Sistemi (GIAS)</h1>
+            <h2>KOD ADI: CERBERUS</h2>
+            <div class="formula">
+                E<sub>başarı</sub> = ∫ |Ψ<sub>hedef</sub>(t) - Ψ<sub>şablon</sub>(t)|² dt → 0
+            </div>
+        </header>
+
+        <main>
+            <section class="panel dna-display-container">
+                <h3>DNA DİZİLİMİ</h3>
+                <div class="dna-sequence">
+                    <label>HEDEF DNA (Hasta Örneği):</label>
+                    <code>...GATTACA<span id="target-base" class="base-error">T</span>AGGCAT...</code>
+                </div>
+                <div class="dna-sequence">
+                    <label>DİJİTAL ŞABLON (Mükemmel Kopya):</label>
+                    <code>...GATTACA<span class="base-correct">A</span>AGGCAT...</code>
+                </div>
+            </section>
+
+            <section class="panel control-panel">
+                <h3>KONTROL VE DURUM</h3>
+                <button id="startButton">SİMÜLASYONU BAŞLAT</button>
+                <div class="steps-container">
+                    <div class="step" id="step-verify">
+                        <span class="step-icon"></span>
+                        <span class="step-name">1. DOĞRULAMA</span>
+                        <span class="step-status">Bekleniyor</span>
+                    </div>
+                    <div class="step" id="step-modify">
+                        <span class="step-icon"></span>
+                        <span class="step-name">2. DEĞİŞTİRME</span>
+                        <span class="step-status">Bekleniyor</span>
+                    </div>
+                    <div class="step" id="step-confirm">
+                        <span class="step-icon"></span>
+                        <span class="step-name">3. ONAYLAMA</span>
+                        <span class="step-status">Bekleniyor</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel log-console">
+                <h3>SİSTEM LOG KAYITLARI</h3>
+                <pre id="log-output">GIAS v3.0 arayüzü başlatıldı. Sistem komut bekliyor...</pre>
+            </section>
+
+            <section class="panel system-status-container">
+                <h3>ALTYAPI DURUMU</h3>
+                <div class="system-status" id="quantum-computer">
+                    <p>Kuantum Bilgisayar</p>
+                    <div class="status-light-container">
+                        <span class="status-light offline"></span>
+                        <span class="status-text">ÇEVRİMDIŞI</span>
+                    </div>
+                </div>
+                <div class="system-status" id="laser-system">
+                    <p>Attosaniye Lazer Sistemi</p>
+                    <div class="status-light-container">
+                        <span class="status-light offline"></span>
+                        <span class="status-text">ÇEVRİMDIŞI</span>
+                    </div>
+                </div>
+                <div class="system-status" id="bio-chamber">
+                    <p>Biyo-İşlem Odası</p>
+                    <div class="status-light-container">
+                        <span class="status-light offline"></span>
+                        <span class="status-text">KARARSIZ</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Sıfır-Hata Genomik Düzenleme Teknolojisi Simülasyonu</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

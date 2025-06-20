@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Chronos Genesis - 2050 Simülasyon Terminali</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --primary-color: #00f0ff;
+            --secondary-color: #ff00ff;
+            --bg-color: #0a0a1f;
+            --panel-bg-color: rgba(15, 20, 50, 0.8);
+            --text-color: #e0e0e0;
+            --border-glow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color), 0 0 15px var(--primary-color);
+            --text-glow: 0 0 2px var(--primary-color);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 1;
+            background-size: 100% 3px, 5px 100%;
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100vh; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            height: 95vh;
+            max-height: 800px;
+            background: var(--panel-bg-color);
+            border: 1px solid var(--primary-color);
+            box-shadow: var(--border-glow);
+            padding: 25px;
+            z-index: 2;
+            backdrop-filter: blur(3px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 15px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            text-shadow: var(--text-glow);
+            font-size: 2.5em;
+            letter-spacing: 3px;
+        }
+
+        header p {
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        #model-selection {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100%;
+            gap: 30px;
+        }
+
+        .model-button {
+            width: 60%;
+            padding: 20px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.5em;
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            text-shadow: var(--text-glow);
+        }
+
+        .model-button:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            box-shadow: var(--border-glow);
+        }
+        
+        .model-button span {
+            display: block;
+            font-size: 0.7em;
+            color: var(--text-color);
+            margin-top: 10px;
+        }
+        .model-button:hover span {
+             color: var(--bg-color);
+        }
+
+        #simulation-container {
+            display: none;
+            flex: 1;
+            flex-direction: row;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .panel {
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 15px;
+            background-color: rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+        
+        /* Scrollbar styling */
+        .panel::-webkit-scrollbar {
+            width: 8px;
+        }
+        .panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .panel::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+        }
+
+
+        #left-panel {
+            flex: 0 0 350px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #left-panel h2 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            border-bottom: 1px dashed var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        #step-list {
+            list-style: none;
+            padding: 0;
+            flex-grow: 1;
+        }
+
+        #step-list li {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        #step-list li.active {
+            border-left-color: var(--primary-color);
+            background-color: rgba(0, 240, 255, 0.1);
+            cursor: pointer;
+            opacity: 1;
+        }
+        #step-list li.active:hover {
+             background-color: rgba(0, 240, 255, 0.2);
+        }
+
+        #step-list li.running::after {
+            content: 'İŞLENİYOR...';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 0.8em;
+            animation: blink 1s infinite;
+        }
+
+        #step-list li.completed {
+            border-left-color: #0f0;
+            opacity: 0.8;
+            cursor: pointer;
+            text-decoration: line-through;
+        }
+
+        #step-list li.failed {
+            border-left-color: #f00;
+            opacity: 0.8;
+            cursor: pointer;
+            text-decoration: line-through;
+        }
+        
+        #reset-button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        #reset-button:hover {
+            background-color: var(--secondary-color);
+            color: var(--bg-color);
+        }
+
+        #main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #visual-simulation-panel {
+            flex-basis: 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        #visual-simulation-panel h3 {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            color: var(--primary-color);
+        }
+        
+        #simulation-log {
+            position: absolute;
+            bottom: 15px;
+            width: 95%;
+            background-color: rgba(0,0,0,0.5);
+            padding: 8px;
+            border: 1px dashed rgba(0,240,255,0.4);
+            font-size: 0.9em;
+            min-height: 3em;
+        }
+
+        #details-panel {
+            flex-basis: 55%;
+        }
+
+        #details-panel h3 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        .detail-item h4 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        .detail-item p {
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .reality-bar-container {
+            width: 100%;
+            height: 20px;
+            background-color: #333;
+            border: 1px solid #555;
+        }
+        .reality-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 1s ease-out;
+        }
+        #reality-value {
+            font-weight: bold;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+
+        /* --- Visual Simulation Styles --- */
+        .dna-helix {
+            width: 50px;
+            height: 150px;
+            position: relative;
+            animation: rotate 10s linear infinite;
+        }
+        .dna-helix .strand {
+            width: 10px;
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            left: 20px;
+        }
+        .dna-helix .strand:first-child { transform: translateX(-15px); }
+        .dna-helix .strand:last-child { transform: translateX(15px); }
+        .dna-helix .base {
+            width: 30px;
+            height: 4px;
+            background: var(--secondary-color);
+            position: absolute;
+            left: 10px;
+        }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .crispr-anim .dna-segment {
+            width: 200px; height: 10px; background: linear-gradient(90deg, #0f0, #0f0, #0f0, #f00, #f00, #0f0, #0f0);
+            position: relative;
+        }
+        .crispr-anim .cas9 {
+            width: 30px; height: 20px; background: var(--primary-color);
+            position: absolute; top: -25px; left: 80px;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%);
+            animation: crispr-move 2s ease-in-out forwards;
+        }
+        @keyframes crispr-move {
+            0% { left: 0px; }
+            50% { left: 80px; }
+            60% { background: #f00; }
+            70% { background: var(--primary-color); }
+            100% { left: 80px; }
+        }
+        
+        .bio-reactor {
+            width: 150px; height: 200px;
+            border: 2px solid var(--primary-color);
+            border-radius: 75px 75px 20px 20px;
+            background: radial-gradient(circle, rgba(0,240,255,0.2), rgba(0,240,255,0.05));
+            position: relative;
+            overflow: hidden;
+        }
+        .bio-reactor .fluid {
+            position: absolute; bottom: 0; width: 100%; height: 80%;
+            background: linear-gradient(to top, rgba(255,0,255,0.4), transparent);
+        }
+        .bubble {
+            position: absolute; bottom: -20px; width: 10px; height: 10px;
+            background: rgba(0,240,255,0.5);
+            border-radius: 50%;
+            animation: rise 5s infinite;
+        }
+        @keyframes rise {
+            to { transform: translateY(-220px); opacity: 0; }
+        }
+        
+        #growth-silhouette {
+            width: 10px; height: 20px;
+            background: var(--text-color);
+            clip-path: polygon(50% 0%, 60% 30%, 100% 40%, 80% 60%, 85% 100%, 50% 90%, 15% 100%, 20% 60%, 0 40%, 40% 30%);
+            transition: all 2s ease-out;
+            position: absolute;
+            bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PROJE CHRONOS GENESIS</h1>
+            <p>Biyogenetik Simülasyon Terminali v2.0 - 2050 Raporu - Dr. Kaelen Vex</p>
+        </header>
+
+        <div id="model-selection">
+            <p style="font-size: 1.2em; margin-bottom: 20px; text-align: center; max-width: 80%;">Görev Protokolü Seçin (Yıl: 2050):</p>
+            <button class="model-button" data-model="gamete">TASARIM 1: EŞEY HÜCRELİ MODEL <span>(Standardize Edilmiş Biyolojik Yol)</span></button>
+            <button class="model-button" data-model="synthetic">TASARIM 2: TAMAMEN SENTETİK MODEL <span>(De Novo Yaşam Sentezi)</span></button>
+        </div>
+
+        <div id="simulation-container">
+            <div id="left-panel" class="panel">
+                <h2 id="model-title"></h2>
+                <ul id="step-list"></ul>
+                <button id="reset-button">SİMÜLASYONU SIFIRLA</button>
+            </div>
+            <div id="main-content">
+                <div id="visual-simulation-panel" class="panel">
+                    <h3>GÖRSEL SİMÜLASYON [2050]</h3>
+                    <div id="visual-area">
+                        <!-- Dynamic content here -->
+                    </div>
+                    <div id="simulation-log">Sistem beklemede. Başlatmak için bir görev adımı seçin...</div>
+                </div>
+                <div id="details-panel" class="panel">
+                    <h3>ADIM DETAYLARI [2050]</h3>
+                    <div id="details-content">
+                        <p>Lütfen soldaki menüden bir işlem adımı seçin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectData = {
+            gamete: [
+                { id: 1, title: 'Adım 1: Gamet Eldesi ve Anlık Analiz', desc: 'Gametler donörlerden alınır ve Kuantum Tünelleme Dizileyiciler (QTS) ile anında, hatasız bir şekilde analiz edilir ve dijital ikizleri oluşturulur.', tech: 'Otonom Gamet Toplama Üniteleri, Kuantum Tünelleme Dizileme (QTS).', reality: 100, ethics: 'Genetik Veri Egemenliği Yasası uyarınca donörün tam kontrolü esastır. Veri mülkiyeti tartışmaları büyük ölçüde çözülmüştür.', duration: 1000 },
+                { id: 2, title: 'Adım 2: AI-Güdümlü Genomik Düzenleme', desc: 'Yapay zeka, belirlenen hedeflere göre en uygun genetik ve epigenetik düzenlemeleri tasarlar ve uygular. Çoklu gen ağları aynı anda, sıfır-hedef-dışı hata oranıyla modifiye edilir.', tech: 'AI-Güdümlü Epigenetik Editörler, CRISPR 4.0 (Çoklu-hedefli).', reality: 95, ethics: 'Uluslararası Biyo-Etik Konseyi tarafından belirlenen "Geliştirme Sınırları Protokolü"ne tabidir. İzin verilen ve verilmeyen modifikasyonlar nettir.', duration: 2500 },
+                { id: 3, title: 'Adım 3: İleri Fonksiyonel Geliştirme', desc: 'AI tarafından tasarlanan yeni, sentetik genler (örn. radyasyona karşı doğal kalkan, artırılmış hücresel onarım) genoma entegre edilir.', tech: 'AI-Yaratımlı Gen Ağları, Sentetik Protein Tasarım Platformları.', reality: 60, ethics: '"Trans-insan Hakları Yasası" tartışmaları. Geliştirilmiş bireylerin yasal statüsü ve toplumsal entegrasyonu ana konulardır.', duration: 3000 },
+                { id: 4, title: 'Adım 4: Bilişsel ve Davranışsal Modülasyon', desc: 'Hormonal tepki döngüleri ve nörotransmitter hassasiyetini düzenleyen gen ağları, belirlenmiş psikolojik profillere göre hassas bir şekilde ayarlanır.', tech: 'Nöro-Epigenetik Programlama, AI Davranış Modelleme.', reality: 20, ethics: '"Bilişsel Özgürlük ve Duygusal Otantiklik Protokolleri". Bireyin önceden belirlenmiş bir karaktere "kilitlenmesi" kesinlikle yasaktır.', duration: 4000 },
+                { id: 5, title: 'Adım 5: Otonom Ektogenez (BioPod)', desc: 'Tamamlanmış zigot, tam otonom bir yapay rahim olan BioPod\'a yerleştirilir. AI, plasentanın tüm fonksiyonlarını mükemmele yakın taklit eder.', tech: 'Tam Otonom BioPodlar, AI Kontrollü Plasental Replikasyon.', reality: 75, ethics: 'Doğal doğuma alternatif olarak yaygınlaşmaktadır. "Bağlanma açığı" teorileri, erken dönem nöral simülasyonlarla büyük ölçüde çürütülmüştür.', duration: 2000 },
+                { id: 6, title: 'Adım 6: Optimize Edilmiş Gelişim', desc: 'Büyüme sinyalleri optimize edilerek 9 aylık gebelik süreci, güvenli bir şekilde 3-4 aya indirilir. Gelişim sürekli olarak izlenir ve anlık müdahaleler yapılır.', tech: 'Zaman-Kontrollü Gelişimsel Sinyal Kaskadları (Deneysel).', reality: 5, ethics: 'Sürecin hızlandırılmasının uzun vadeli epigenetik etkileri hala araştırılmaktadır. Prosedür yüksek riskli olarak sınıflandırılmıştır.', duration: 4500 },
+                { id: 7, title: 'Adım 7: Hızlandırılmış Olgunlaşma (Zihinsel)', desc: 'Fiziksel büyüme normal seyrinde devam ederken, zihinsel olgunlaşma nöral simülasyon ve BCI destekli hızlandırılmış öğrenme protokolleri ile desteklenir.', tech: 'Tam Dalış Nöral Simülasyon, BCI Destekli Eğitim Matrisleri (Teorik/Deneysel).', reality: 1, ethics: 'Bir bilinci yapay deneyimlerle şekillendirmenin ahlaki boyutu. "Gerçek" ve "simülasyon" anılarının entegrasyonu en büyük etik engeldir.', duration: 5000 }
+            ],
+            synthetic: [
+                { id: 1, title: 'Adım 1: Kuantum Genomik Tasarım', desc: 'Bir insan genomu, tüm genetik, düzenleyici ve epigenetik bilgileriyle birlikte, kuantum bilgisayar destekli AI platformlarında atomik düzeyde sıfırdan tasarlanır.', tech: 'Kuantum Genomik Tasarım Platformları (QGDP).', reality: 100, ethics: 'Dijital yaşam formlarının hakları ve patentlenebilirliği üzerine hukuki tartışmalar. "Yaratıcı"nın sorumluluğu.', duration: 1500 },
+                { id: 2, title: 'Adım 2: Kromozom Biyo-Yazımı', desc: 'Tasarlanan genom, yüksek hızlı biyo-yazıcılar tarafından baz çifti baz çifti sentezlenir ve protein iskeleleriyle birleştirilerek 46 kromozom halinde monte edilir.', tech: '3D Kromozom Biyo-Yazıcıları, Epigenetik Marker Entegrasyonu.', reality: 85, ethics: 'Bu teknolojinin kötüye kullanımı (biyo-terörizm) en büyük güvenlik endişesidir. Üretim tesisleri sıkı denetim altındadır.', duration: 3000 },
+                { id: 3, title: 'Adım 3: Sentetik Hücre Montajı', desc: 'Yapay kromozomlar, sentetik organeller ve sitoplazmik bileşenler, bir lipit zarı içinde otonom olarak bir araya getirilerek fonksiyonel bir zigot oluşturulur.', tech: 'Otonom Hücresel Montaj, Sentetik Organel Üretimi.', reality: 50, ethics: '"Canlılığın" tanımı üzerine felsefi ve yasal statü. Sentetik bir varlığın ne zaman "insan" olarak kabul edileceği.', duration: 3500 },
+                { id: 4, title: 'Adım 4: Kuantum Entanglement Aktivasyonu', desc: 'Yaşamın "kıvılcımı", hücre içindeki moleküllerin kuantum durumlarını senkronize eden kontrollü bir enerji darbesiyle tetiklenir.', tech: 'Kuantum Biyolojik Rezonatörler (Teorik).', reality: 40, ethics: 'Yaşamı başlatma eyleminin kendisi. Öngörülemeyen sonuçlar ve olası başarısızlıkların ahlaki yükü.', duration: 4000 },
+                { id: 5, title: 'Adım 5: Otonom Ektogenez (BioPod)', desc: 'Aktive edilen sentetik zigot, standart ektogenez protokolü için bir BioPod\'a yerleştirilir.', tech: 'Tam Otonom BioPodlar.', reality: 75, ethics: 'Sentetik başlangıç nedeniyle daha yüksek başarısızlık riski. "Doğal olmayan" bir yaşam formu yaratmanın getirdiği sorumluluk.', duration: 2000 },
+                { id: 6, title: 'Adım 6: Optimize Edilmiş Gelişim', desc: 'Sentetik zigotun gelişim süreci, standart optimize edilmiş protokole göre ilerletilir.', tech: 'Zaman-Kontrollü Gelişimsel Sinyal Kaskadları.', reality: 5, ethics: 'Temel tasarımda olabilecek gizli hataların gelişim sırasında feci sonuçlara yol açma riski, gamet modeline göre çok daha yüksektir.', duration: 4500 },
+                { id: 7, title: 'Adım 7: Hızlandırılmış Olgunlaşma (Zihinsel)', desc: 'Gamet modelindekiyle aynı protokoller uygulanır ancak sentetik bir beyin yapısının simülasyonlara nasıl tepki vereceği daha büyük bir bilinmezdir.', tech: 'Tam Dalış Nöral Simülasyon, BCI.', reality: 1, ethics: 'Tamamen yapay bir zihne "insanlık" aşılamanın imkanı ve etiği. Bu, projenin en tartışmalı ve spekülatif adımıdır.', duration: 5000 }
+            ]
+        };
+
+        let currentModel = null;
+        let currentStepIndex = 0;
+        let isSimulating = false;
+
+        const modelSelectionDiv = document.getElementById('model-selection');
+        const simulationContainerDiv = document.getElementById('simulation-container');
+        const stepList = document.getElementById('step-list');
+        const modelTitle = document.getElementById('model-title');
+        const detailsContent = document.getElementById('details-content');
+        const visualArea = document.getElementById('visual-area');
+        const simulationLog = document.getElementById('simulation-log');
+        const resetButton = document.getElementById('reset-button');
+        
+        document.querySelectorAll('.model-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const model = button.dataset.model;
+                startSimulation(model);
+            });
+        });
+
+        resetButton.addEventListener('click', resetSimulation);
+
+        function startSimulation(model) {
+            currentModel = model;
+            currentStepIndex = 0;
+            modelSelectionDiv.style.display = 'none';
+            simulationContainerDiv.style.display = 'flex';
+            
+            modelTitle.textContent = model === 'gamete' ? 'TASARIM 1: EŞEY HÜCRELİ [2050]' : 'TASARIM 2: SENTETİK [2050]';
+            
+            populateStepList();
+            showInitialDetails();
+        }
+
+        function resetSimulation() {
+            currentModel = null;
+            currentStepIndex = 0;
+            isSimulating = false;
+            modelSelectionDiv.style.display = 'flex';
+            simulationContainerDiv.style.display = 'none';
+            stepList.innerHTML = '';
+            detailsContent.innerHTML = '<p>Lütfen soldaki menüden bir işlem adımı seçin.</p>';
+            visualArea.innerHTML = '';
+            simulationLog.textContent = 'Sistem beklemede. Başlatmak için bir görev adımı seçin...';
+        }
+
+        function populateStepList() {
+            stepList.innerHTML = '';
+            projectData[currentModel].forEach((step, index) => {
+                const li = document.createElement('li');
+                li.textContent = step.title;
+                li.dataset.index = index;
+                if (index === 0) {
+                    li.classList.add('active');
+                }
+                li.addEventListener('click', () => handleStepClick(index));
+                stepList.appendChild(li);
+            });
+        }
+        
+        function showInitialDetails() {
+            const firstStep = projectData[currentModel][0];
+            updateDetailsPanel(firstStep);
+            updateVisualSimulation(0, 'idle');
+        }
+
+        function handleStepClick(index) {
+            const stepItem = stepList.children[index];
+            if (isSimulating || !stepItem.classList.contains('active')) {
+                simulationLog.textContent = `HATA: ${stepItem.textContent} şu anda aktif değil. Lütfen sıradaki adımı takip edin.`;
+                return;
+            }
+            runSimulationStep(index);
+        }
+
+        function runSimulationStep(index) {
+            isSimulating = true;
+            const stepData = projectData[currentModel][index];
+            const stepItem = stepList.children[index];
+
+            document.querySelectorAll('#step-list li').forEach(li => li.classList.remove('active'));
+            stepItem.classList.add('running');
+            stepItem.classList.remove('active');
+            
+            simulationLog.textContent = `[${stepData.title}] simülasyonu başlatılıyor... İşlem süresi: ${stepData.duration / 1000} saniye.`;
+            updateDetailsPanel(stepData);
+            updateVisualSimulation(stepData.id, 'running');
+
+            setTimeout(() => {
+                const success = Math.random() * 100 < stepData.reality;
+                
+                stepItem.classList.remove('running');
+                if (success || stepData.reality === 100) {
+                    stepItem.classList.add('completed');
+                    simulationLog.textContent = `[${stepData.title}] başarıyla tamamlandı.`;
+                    updateVisualSimulation(stepData.id, 'completed');
+
+                    currentStepIndex++;
+                    if (currentStepIndex < projectData[currentModel].length) {
+                        stepList.children[currentStepIndex].classList.add('active');
+                    } else {
+                        simulationLog.textContent = 'TÜM PROJE AŞAMALARI TAMAMLANDI. SİMÜLASYON SONA ERDİ.';
+                    }
+                } else {
+                    stepItem.classList.add('failed');
+                    simulationLog.textContent = `SİMÜLASYON BAŞARISIZ! [${stepData.title}] - Gerçeklik Yüzdesi (%${stepData.reality}) aşılamadı. Teknolojik, biyolojik veya etik kısıtlamalar aşılamadı. Sistem durduruldu.`;
+                    updateVisualSimulation(stepData.id, 'failed');
+                }
+                
+                isSimulating = false;
+            }, stepData.duration);
+        }
+
+        function updateDetailsPanel(stepData) {
+            detailsContent.innerHTML = `
+                <h3>${stepData.title}</h3>
+                <div class="detail-item">
+                    <h4>Adımın Açıklaması</h4>
+                    <p>${stepData.desc}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Teknolojik Gereksinimler</h4>
+                    <p>${stepData.tech}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Gerçeklik Yüzdesi (2050): <span id="reality-value">${stepData.reality}%</span></h4>
+                    <p>Bu adımın 2050 yılı teknolojisiyle gerçekleştirilme olasılığı.</p>
+                    <div class="reality-bar-container">
+                        <div class="reality-bar" style="width: ${stepData.reality}%"></div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <h4>Temel Zorluklar ve Etik Sorunlar (2050)</h4>
+                    <p>${stepData.ethics}</p>
+                </div>
+            `;
+        }
+        
+        function updateVisualSimulation(stepId, status) {
+            visualArea.innerHTML = '';
+            let html = '';
+            let effectiveId = currentModel === 'synthetic' ? stepId + 10 : stepId;
+
+            if (status === 'failed') {
+                visualArea.innerHTML = '<h1 style="color: #f00; font-size: 3em;">SİSTEM HATASI</h1>';
+                return;
+            }
+
+            switch(effectiveId) {
+                case 1: // Gamet Eldesi
+                    html = `<p style="font-size: 1.2em; line-height: 1.1;">
+                        > [QTS_INIT]<br>
+                        > SCANNING...<br>
+                        > GAMETE_ID: 7A3B1... <span style="color:var(--primary-color)">ANALYSIS_COMPLETE</span><br>
+                        > DIGITAL_TWIN_CREATED...<br>
+                        > [QTS_END]
+                    </p>`;
+                    break;
+                case 2: // AI-Güdümlü Düzenleme
+                    html = `
+                    <div class="crispr-anim">
+                        <p>AI-Güdümlü Epigenetik Düzenleme:</p>
+                        <div class="dna-segment" style="background: linear-gradient(90deg, #0f0, #ff0, #0f0, #ff0, #f00, #0f0, #0ff);"></div>
+                        <div class="cas9"></div>
+                        <p style="margin-top: 20px;">Çoklu hedef ağı aynı anda işleniyor...</p>
+                    </div>`;
+                    break;
+                case 3: // Fonksiyonel Geliştirme
+                    html = `<p style="font-size: 1.2em; line-height: 1.1;">
+                        > // AI_DESIGN_MODULE<br>
+                        > GENERATING_NOVEL_PROTEIN (rad_shield_v3.1)...<br>
+                        > PREDICTED_FOLDING_ACCURACY: 99.8%<br>
+                        > <span style="color:var(--primary-color)">INTEGRATING_GENE_NETWORK...</span>
+                    </p>`;
+                    break;
+                case 4: // Bilişsel Modülasyon
+                     html = `
+                        <img src="https://i.ibb.co/6y1C8gT/brain-network.png" alt="Brain Network" style="width:150px; filter: invert(1) hue-rotate(180deg) brightness(1.5);">
+                        <p>Nöro-Epigenetik Programlama...</p>
+                    `;
+                    break;
+                case 5: // BioPod
+                case 15:
+                    html = `<div class="bio-reactor">
+                                <div class="fluid"></div>
+                                <div class="bubble" style="left: 20%; animation-delay: 0s;"></div>
+                                <div class="bubble" style="left: 50%; animation-delay: 1s;"></div>
+                                <div class="bubble" style="left: 70%; animation-delay: 2.5s;"></div>
+                            </div>
+                            <p>Otonom BioPod'a Transfer Edildi.</p>`;
+                    break;
+                case 6: // Optimize Gelişim
+                case 16:
+                    html = `<div class="bio-reactor">
+                                <div class="fluid"></div>
+                                <div id="growth-silhouette" style="width:20px; height: 50px;"></div>
+                                <div class="bubble" style="left: 20%; animation-delay: 0s;"></div>
+                            </div>
+                            <p>Optimize Edilmiş Gelişim Protokolü Aktif.</p>`;
+                    break;
+                case 7: // Hızlandırılmış Olgunlaşma
+                case 17:
+                    html = `<div class="bio-reactor">
+                                <div class="fluid"></div>
+                                <div id="growth-silhouette" style="width:60px; height: 150px;"></div>
+                            </div>
+                            <p>BCI Destekli Nöral Simülasyon Başlatıldı.</p>`;
+                    break;
+                case 11: // Kuantum Genomik Tasarım
+                     html = `<p style="font-size: 1em; line-height: 1.1; text-align: left;">
+                        > init --platform QGDP<br>
+                        > design --template human_v4.2 --optimize [all]<br>
+                        > // Simulating quantum entanglement of regulatory networks...<br>
+                        > <span style="color:var(--primary-color);">[##########] DESIGN_LOCKED</span>
+                    </p>`;
+                    break;
+                case 12: // Kromozom Biyo-Yazımı
+                    html = `<p>3D Kromozom Biyo-Yazıcı Aktif</p>
+                            <div style="width:80%; height:10px; background: #333; margin:10px 0;">
+                                <div style="width:100%; height:100%; background:var(--primary-color); animation: load_bar 3s forwards;"></div>
+                            </div>
+                            <p>Epigenetik işaretçiler entegre ediliyor...</p>
+                            @keyframes load_bar { from {width:0%} to {width:100%}}`;
+                    break;
+                case 13: // Sentetik Hücre Montajı
+                     html = `<div style="width: 150px; height: 150px; border: 2px solid var(--secondary-color); border-radius: 50%; display:flex; justify-content:center; align-items:center; flex-direction: column;">
+                                <p>Otonom Montaj</p>
+                                <div class="dna-helix" style="width:20px; height:60px; animation: none;"></div>
+                             </div>
+                             <p>Fonksiyonel sentetik zigot oluşturuluyor.</p>`;
+                    break;
+                case 14: // Kuantum Aktivasyon
+                     html = `<div style="width: 150px; height: 150px; border: 2px solid var(--primary-color); border-radius: 50%; box-shadow: var(--border-glow); animation: pulse 2s infinite;"></div>
+                             <p>KUANTUM REZONANS AKTİVASYONU...</p>
+                             @keyframes pulse { 50% {transform: scale(1.1); box-shadow: 0 0 25px var(--primary-color);}}`;
+                    break;
+                default:
+                    html = `<p>Sistem beklemede...</p>`;
+            }
+
+            visualArea.innerHTML = html;
+        }
+
+    </script>
+</body>
+</html>

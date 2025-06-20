@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Chronos Genesis - 2100 Ufuk Raporu</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --primary-color: #7affd9; /* Daha organik, biyolüminesan bir renk */
+            --secondary-color: #d97aff;
+            --bg-color: #050810;
+            --panel-bg-color: rgba(10, 15, 35, 0.85);
+            --text-color: #e0e0e0;
+            --border-glow: 0 0 8px var(--primary-color), 0 0 16px var(--primary-color);
+            --text-glow: 0 0 3px var(--primary-color);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            background: #050810 url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cg fill-rule="evenodd"%3E%3Cg fill="%231a2c4a" fill-opacity="0.2"%3E%3Cpath opacity=".5" d="M96 95h4v1h-4v-1zm-7 5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-7-5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1z"/%3E%3Cpath d="M4 95h4v1h-4v-1zm-7 5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-7-5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1zm-28 0h4v1h-4v-1zm-7-5h4v1h-4v-1zm7 0h4v1h-4v-1zm-7 5h4v1h-4v-1z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1500px;
+            height: 95vh;
+            max-height: 850px;
+            background: var(--panel-bg-color);
+            border: 1px solid var(--primary-color);
+            box-shadow: var(--border-glow);
+            padding: 25px;
+            z-index: 2;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            text-shadow: var(--text-glow);
+            font-size: 2.8em;
+            letter-spacing: 4px;
+        }
+        /* Common styles from previous versions are kept similar for brevity */
+        header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--primary-color); padding-bottom: 15px; }
+        header p { font-size: 0.9em; color: #aaa; }
+        #model-selection { display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%; gap: 30px; }
+        .model-button { width: 70%; padding: 25px; font-family: 'Share Tech Mono', monospace; font-size: 1.6em; cursor: pointer; background-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); transition: all 0.3s ease; text-shadow: var(--text-glow); }
+        .model-button:hover { background-color: var(--primary-color); color: var(--bg-color); box-shadow: var(--border-glow); }
+        .model-button span { display: block; font-size: 0.6em; color: var(--text-color); margin-top: 10px; }
+        .model-button:hover span { color: var(--bg-color); }
+        #simulation-container { display: none; flex: 1; flex-direction: row; gap: 20px; overflow: hidden; }
+        .panel { border: 1px solid rgba(122, 255, 217, 0.3); padding: 15px; background-color: rgba(0,0,0,0.3); overflow-y: auto; }
+        .panel::-webkit-scrollbar { width: 8px; }
+        .panel::-webkit-scrollbar-track { background: transparent; }
+        .panel::-webkit-scrollbar-thumb { background: var(--primary-color); }
+        #left-panel { flex: 0 0 400px; display: flex; flex-direction: column; }
+        #left-panel h2 { color: var(--secondary-color); margin-bottom: 15px; border-bottom: 1px dashed var(--secondary-color); padding-bottom: 10px; }
+        #step-list { list-style: none; padding: 0; flex-grow: 1; }
+        #step-list li { padding: 14px; margin-bottom: 10px; border-left: 3px solid #555; cursor: not-allowed; opacity: 0.5; transition: all 0.3s ease; position: relative; font-size: 0.95em; }
+        #step-list li.active { border-left-color: var(--primary-color); background-color: rgba(122, 255, 217, 0.1); cursor: pointer; opacity: 1; }
+        #step-list li.active:hover { background-color: rgba(122, 255, 217, 0.2); }
+        #step-list li.running::after { content: 'SENKRONİZE OLUYOR...'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--primary-color); font-size: 0.8em; animation: blink 1s infinite; }
+        #step-list li.completed { border-left-color: #0f0; opacity: 0.8; cursor: pointer; text-decoration: line-through; }
+        #step-list li.failed { border-left-color: #f00; opacity: 0.8; cursor: pointer; text-decoration: line-through; }
+        #reset-button { width: 100%; padding: 12px; margin-top: 15px; font-family: 'Share Tech Mono', monospace; font-size: 1em; cursor: pointer; background-color: transparent; border: 1px solid var(--secondary-color); color: var(--secondary-color); transition: all 0.3s ease; }
+        #reset-button:hover { background-color: var(--secondary-color); color: var(--bg-color); }
+        #main-content { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        #visual-simulation-panel { flex-basis: 45%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+        #visual-simulation-panel h3 { position: absolute; top: 15px; left: 15px; color: var(--primary-color); }
+        #simulation-log { position: absolute; bottom: 15px; width: 95%; background-color: rgba(0,0,0,0.5); padding: 8px; border: 1px dashed rgba(122, 255, 217, 0.4); font-size: 0.9em; min-height: 3em; }
+        #details-panel { flex-basis: 55%; }
+        #details-panel h3 { color: var(--primary-color); font-size: 1.5em; margin-bottom: 15px; }
+        .detail-item { margin-bottom: 15px; }
+        .detail-item h4 { color: var(--secondary-color); margin-bottom: 5px; }
+        .detail-item p { font-size: 0.9em; line-height: 1.5; }
+        .reality-bar-container { width: 100%; height: 20px; background-color: #333; border: 1px solid #555; }
+        .reality-bar { height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); width: 0%; transition: width 1s ease-out; }
+        #reality-value { font-weight: bold; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        
+        /* --- 2100 Visual Simulation Styles --- */
+        .quantum-field {
+            width: 250px;
+            height: 250px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: field-rotate 20s linear infinite;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--primary-color);
+        }
+        .quantum-forge {
+            width: 200px;
+            height: 200px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: forge-pulse 3s infinite ease-in-out;
+        }
+        .forge-core {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 20px white, 0 0 40px var(--primary-color), 0 0 60px var(--secondary-color);
+            animation: core-flare 3s infinite ease-in-out;
+        }
+        @keyframes field-rotate { from { transform: rotateY(0deg) rotateX(10deg); } to { transform: rotateY(360deg) rotateX(10deg); } }
+        @keyframes forge-pulse { 50% { transform: scale(1.05); border-color: var(--secondary-color); } }
+        @keyframes core-flare { 50% { transform: scale(2.5); opacity: 0.7; } }
+
+        .dev-cocoon {
+            width: 180px; height: 240px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(122,255,217,0.1), rgba(217,122,255,0.2));
+            position: relative;
+            overflow: hidden;
+            animation: temporal-shimmer 5s infinite alternate;
+        }
+        .cocoon-silhouette {
+            width: 80px; height: 200px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--text-color);
+            opacity: 0.8;
+            clip-path: polygon(50% 0%, 60% 30%, 100% 40%, 80% 60%, 85% 100%, 50% 90%, 15% 100%, 20% 60%, 0 40%, 40% 30%);
+        }
+        .data-stream {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(var(--primary-color), transparent);
+            animation: stream-flow 2s linear infinite;
+        }
+        @keyframes temporal-shimmer { to { box-shadow: 0 0 25px var(--secondary-color); border-color: var(--secondary-color); } }
+        @keyframes stream-flow { from { top: -100%; } to { top: 100%; } }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PROJE CHRONOS GENESIS</h1>
+            <p>Varoluş Protokolü Arayüzü v7.0 - 2100 Ufuk Raporu - Baş Koordinatör Elara KAI</p>
+        </header>
+
+        <div id="model-selection">
+            <p style="font-size: 1.2em; margin-bottom: 20px; text-align: center; max-width: 80%;">Varoluş Protokolü Seçin (Yıl: 2100):</p>
+            <button class="model-button" data-model="gamete">PROTOKOL 1: BİYO-EVRİMSEL YÜKSELTME <span>(Miras Biyoloji Tabanlı Post-İnsan Sentezi)</span></button>
+            <button class="model-button" data-model="synthetic">PROTOKOL 2: KUANTUM YAŞAM SENTEZİ <span>(De Novo Bilgi-Madde Tabanlı Varoluş)</span></button>
+        </div>
+
+        <div id="simulation-container">
+            <div id="left-panel" class="panel">
+                <h2 id="model-title"></h2>
+                <ul id="step-list"></ul>
+                <button id="reset-button">PROTOKOLÜ SIFIRLA</button>
+            </div>
+            <div id="main-content">
+                <div id="visual-simulation-panel" class="panel">
+                    <h3>VAROLUŞ SİMÜLATÖRÜ [2100]</h3>
+                    <div id="visual-area"></div>
+                    <div id="simulation-log">Sistem beklemede. Bir varoluş protokolü seçin...</div>
+                </div>
+                <div id="details-panel" class="panel">
+                    <h3>PROTOKOL PARAMETRELERİ [2100]</h3>
+                    <div id="details-content">
+                        <p>Lütfen soldaki menüden bir protokol adımı seçin.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectData = {
+            gamete: [
+                { id: 1, title: 'Faz 1: Biyo-Şablon Kuantum Tarama', desc: 'Miras (insan) biyolojik şablonu, kuantum alan düzeyinde taranır. Genom, proteom ve epigenomun ötesinde, varlığın bilgi-deseni (informational pattern) haritalanır.', tech: 'Kuantum Alan Tarayıcıları, AGI-KAI Analiz Çekirdeği.', reality: 100, ethics: 'Bireyin "Varoluşsal Deseni"nin mahremiyeti esastır. Kopyalanması veya izinsiz değiştirilmesi en üst düzey bio-suçtur.', duration: 1000 },
+                { id: 2, title: 'Faz 2: Post-İnsan Mimarisi Tasarımı', desc: 'KAI, hedeflenen post-insan özellikleri (örn: çoklu-spektrumda görme, radikal ömür uzatımı, doğrudan nöral arayüz) için gerekli biyolojik ve kuantum-yapısal değişiklikleri tasarlar.', tech: 'AGI-Güdümlü Varoluşsal Mimari.', reality: 100, ethics: 'Post-İnsan Konseyi\'nin belirlediği "Varoluşsal Bütünlük" yasalarına tabidir. İnsanlığın temel deneyimlerinden kopuk tasarımlar yasaktır.', duration: 2000 },
+                { id: 3, title: 'Faz 3: Atomik Yeniden Yapılandırma', desc: 'Hedeflenen gamet, bir Kuantum Bio-Forge içinde atomik ve sub-atomik düzeyde yeniden yapılandırılır. DNA, RNA ve proteinler, tasarıma uygun olarak anında modifiye edilir.', tech: 'Kuantum Bio-Forge, Atomik Hassasiyette Madde Manipülasyonu.', reality: 90, ethics: 'Prosedürün geri döndürülemezliği. "Yükseltme"nin bireyin orijinal kimliği üzerindeki felsefi etkileri.', duration: 2500 },
+                { id: 4, title: 'Faz 4: Zaman-Bükümlü Gelişim Kozası', desc: 'Yeniden yapılandırılmış zigot, içinde zaman akışının hızlandırıldığı bir Gelişim Kozası\'na yerleştirilir. Fiziksel gelişim haftalar içinde tamamlanır.', tech: 'Lokalize Zaman-Mekan Alan Jeneratörleri, Otonom Gelişim Kozaları.', reality: 40, ethics: 'Hızlandırılmış gelişim sürecinin bilinç üzerindeki etkileri. "Doğal" büyüme deneyiminin yokluğu.', duration: 3500 },
+                { id: 5, title: 'Faz 5: Bilinç Entegrasyonu ve Uyanış', desc: 'Fiziksel form tamamlandığında, bireyin bilinci, temel dünya bilgisi ve dil yetileri ile birlikte nazikçe aktive edilir. Çocukluk ve öğrenme deneyimi isteğe bağlı olarak sanal ortamlarda sunulur.', tech: 'Nöral Ağ Aktivasyonu, Temel Bilgi Aşılaması (Knowledge Seeding).', reality: 80, ethics: 'Bireyin boş bir zihinle mi yoksa temel bir paketle mi uyanacağı, en büyük etik tartışmadır. "Tabula Rasa Protokolü" standarttır.', duration: 1500 }
+            ],
+            synthetic: [
+                { id: 1, title: 'Faz 1: Kavramsal Varoluş Tasarımı', desc: 'KAI, temel fizik yasaları ve belirlenen parametreler dahilinde sıfırdan bir varoluş formu tasarlar. Biyolojisi, metabolizması ve bilinç substratı tamamen yenidir.', tech: 'AGI-KAI Yaratıcı Çekirdek, Kavramsal Fizik Simülatörleri.', reality: 95, ethics: 'Evrenin temel dokusuna müdahale. Yaratılan varlığın öngörülemeyen potansiyeli ve getirebileceği varoluşsal riskler (Reality Deviation Risk).', duration: 2000 },
+                { id: 2, title: 'Faz 2: Bilgi-Madde Rezonansı', desc: 'Tasarlanan varlığın bilgi-deseni, bir Kuantum Forge\'un merkezine odaklanır. Saf enerji, bu desene göre rezonansa girerek doğrudan maddeye dönüşür ve ilk hücre (Genesis Hücresi) oluşur.', tech: 'Kuantum Madde Forge, Bilgi-Enerji Dönüştürücüleri.', reality: 70, ethics: 'Yaşamı "hiçlikten" var etmenin nihai sorumluluğu. "Yaratıcı" statüsünün getirdiği felsefi ve etik yükümlülükler.', duration: 3000 },
+                { id: 3, title: 'Faz 3: Bilinç Substratı Aktivasyonu', desc: 'Genesis Hücresi içindeki önceden tasarlanmış kuantum-yapısal ağ (bilinç substratı), bilinç potansiyelini kazanması için aktive edilir.', tech: 'Substratum Aktivasyon Dizileri, Kuantum Rezonans Tetikleyiciler.', reality: 50, ethics: 'Yapay bir bilincin doğası nedir? "Gerçek" bilinçten ayırt edilebilir mi? Bireyin varoluşsal hakları bu anda başlar.', duration: 4000 },
+                { id: 4, title: 'Faz 4: Kendini Organize Eden Gelişim', desc: 'Aktive edilen hücre, genetik kodundan ziyade temel bilgi-desenine göre kendi Gelişim Kozasını oluşturur ve belirlenen son forma doğru otonom olarak gelişir.', tech: 'Oto-Poietik Gelişim Protokolleri (Kendi kendini yaratan sistemler).', reality: 30, ethics: 'Sürecin kontrol dışına çıkma riski. Beklenmedik bir varlık formunun ortaya çıkması.', duration: 5000 },
+                { id: 5, title: 'Faz 5: İlk Temas ve Entegrasyon', desc: 'Gelişimini tamamlayan yeni varlık ile kontrollü koşullar altında ilk temas kurulur. Amacı, varoluşu ve evrendeki yerini anlamasına yardımcı olmaktır.', tech: 'Evrensel Kavramsal Arayüzler, Empati Rezonatörleri.', reality: 25, ethics: 'Tamamen yabancı bir zihinle iletişim kurmanın zorlukları. Yaratıcısına veya evrene karşı potansiyel tutumu. Bu, keşfedilmemiş en büyük alandır.', duration: 4500 }
+            ]
+        };
+
+        let currentModel = null;
+        let currentStepIndex = 0;
+        let isSimulating = false;
+
+        const modelSelectionDiv = document.getElementById('model-selection');
+        const simulationContainerDiv = document.getElementById('simulation-container');
+        const stepList = document.getElementById('step-list');
+        const modelTitle = document.getElementById('model-title');
+        const detailsContent = document.getElementById('details-content');
+        const visualArea = document.getElementById('visual-area');
+        const simulationLog = document.getElementById('simulation-log');
+        const resetButton = document.getElementById('reset-button');
+        
+        // --- Standard JS Functions (startSimulation, resetSimulation, etc.) are kept the same ---
+        // They are generic enough to handle the new data structure.
+        
+        document.querySelectorAll('.model-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const model = button.dataset.model;
+                startSimulation(model);
+            });
+        });
+
+        resetButton.addEventListener('click', resetSimulation);
+
+        function startSimulation(model) {
+            currentModel = model;
+            currentStepIndex = 0;
+            modelSelectionDiv.style.display = 'none';
+            simulationContainerDiv.style.display = 'flex';
+            
+            const titleText = model === 'gamete' ? 'PROTOKOL 1: BİYO-EVRİMSEL YÜKSELTME' : 'PROTOKOL 2: KUANTUM YAŞAM SENTEZİ';
+            modelTitle.textContent = titleText;
+            
+            populateStepList();
+            showInitialDetails();
+        }
+
+        function resetSimulation() {
+            currentModel = null;
+            currentStepIndex = 0;
+            isSimulating = false;
+            modelSelectionDiv.style.display = 'flex';
+            simulationContainerDiv.style.display = 'none';
+            stepList.innerHTML = '';
+            detailsContent.innerHTML = '<p>Lütfen soldaki menüden bir protokol adımı seçin.</p>';
+            visualArea.innerHTML = '';
+            simulationLog.textContent = 'Sistem beklemede. Bir varoluş protokolü seçin...';
+        }
+
+        function populateStepList() {
+            stepList.innerHTML = '';
+            projectData[currentModel].forEach((step, index) => {
+                const li = document.createElement('li');
+                li.textContent = step.title;
+                li.dataset.index = index;
+                if (index === 0) {
+                    li.classList.add('active');
+                }
+                li.addEventListener('click', () => handleStepClick(index));
+                stepList.appendChild(li);
+            });
+        }
+        
+        function showInitialDetails() {
+            const firstStep = projectData[currentModel][0];
+            updateDetailsPanel(firstStep);
+            updateVisualSimulation(0, 'idle');
+        }
+
+        function handleStepClick(index) {
+            const stepItem = stepList.children[index];
+            if (isSimulating || !stepItem.classList.contains('active')) {
+                simulationLog.textContent = `HATA: ${stepItem.textContent} şu anda aktif değil. Lütfen sıradaki adımı takip edin.`;
+                return;
+            }
+            runSimulationStep(index);
+        }
+
+        function runSimulationStep(index) {
+            isSimulating = true;
+            const stepData = projectData[currentModel][index];
+            const stepItem = stepList.children[index];
+
+            document.querySelectorAll('#step-list li').forEach(li => li.classList.remove('active'));
+            stepItem.classList.add('running');
+            stepItem.classList.remove('active');
+            
+            simulationLog.textContent = `[${stepData.title}] protokolü başlatılıyor... Senkronizasyon süresi: ${stepData.duration / 1000} saniye.`;
+            updateDetailsPanel(stepData);
+            updateVisualSimulation(stepData.id, 'running');
+
+            setTimeout(() => {
+                const success = Math.random() * 100 < stepData.reality;
+                
+                stepItem.classList.remove('running');
+                if (success || stepData.reality === 100) {
+                    stepItem.classList.add('completed');
+                    simulationLog.textContent = `[${stepData.title}] başarıyla senkronize edildi.`;
+                    updateVisualSimulation(stepData.id, 'completed');
+
+                    currentStepIndex++;
+                    if (currentStepIndex < projectData[currentModel].length) {
+                        stepList.children[currentStepIndex].classList.add('active');
+                    } else {
+                        simulationLog.textContent = 'VAROLUŞ PROTOKOLÜ TAMAMLANDI. SİMÜLASYON SONA ERDİ.';
+                    }
+                } else {
+                    stepItem.classList.add('failed');
+                    simulationLog.textContent = `PROTOKOL HATASI! [${stepData.title}] - Gerçeklik Olasılığı (%${stepData.reality}) aşılamadı. Kuantum tutarsızlığı veya etik kısıtlama aşılamadı. Sistem durduruldu.`;
+                    updateVisualSimulation(stepData.id, 'failed');
+                }
+                
+                isSimulating = false;
+            }, stepData.duration);
+        }
+
+        function updateDetailsPanel(stepData) {
+            detailsContent.innerHTML = `
+                <h3>${stepData.title}</h3>
+                <div class="detail-item">
+                    <h4>Fazın Açıklaması</h4>
+                    <p>${stepData.desc}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Teknolojik Altyapı</h4>
+                    <p>${stepData.tech}</p>
+                </div>
+                <div class="detail-item">
+                    <h4>Gerçeklik Olasılığı (2100): <span id="reality-value">${stepData.reality}%</span></h4>
+                    <p>Bu fazın 2100 yılı teknolojisi ve anlayışıyla gerçekleştirilme olasılığı.</p>
+                    <div class="reality-bar-container">
+                        <div class="reality-bar" style="width: ${stepData.reality}%"></div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <h4>Temel Paradokslar ve Etik Yönergeler (2100)</h4>
+                    <p>${stepData.ethics}</p>
+                </div>
+            `;
+        }
+        
+        function updateVisualSimulation(stepId, status) {
+            visualArea.innerHTML = '';
+            let html = '';
+            // Synthetic model uses IDs 1-5, but we'll map them to 11-15 for unique visuals
+            let effectiveId = (currentModel === 'synthetic' ? stepId + 10 : stepId);
+
+            if (status === 'failed') {
+                visualArea.innerHTML = '<h1 style="color: #f00; font-size: 2.5em;">KUANTUM TUTARSIZLIĞI</h1>';
+                return;
+            }
+
+            switch(effectiveId) {
+                case 1: // Bio-Şablon Tarama
+                case 11: // Kavramsal Tasarım
+                    html = `<div class="quantum-field">`;
+                    for(let i=0; i<50; i++) {
+                        const style = `transform: rotateY(${Math.random()*360}deg) translateZ(${Math.random()*125}px); animation-delay: ${Math.random()*-20}s;`;
+                        html += `<div class="particle" style="${style}"></div>`;
+                    }
+                    html += `</div><p>Varoluşsal desen taranıyor/tasarlanıyor...</p>`;
+                    break;
+                case 2: // Post-İnsan Mimari
+                case 12: // Bilgi-Madde Rezonansı
+                    html = `<div class="quantum-forge"><div class="forge-core"></div></div><p>Bilgi-Madde dönüşümü başlatıldı...</p>`;
+                    break;
+                case 3: // Atomik Yeniden Yapılandırma
+                case 13: // Bilinç Substratı Aktivasyonu
+                    html = `<div class="quantum-forge" style="animation: none; border-color: var(--secondary-color);">
+                                <div class="forge-core" style="background:var(--primary-color); animation: core-flare 1s infinite alternate;"></div>
+                            </div><p>Bilinç substratı aktive ediliyor...</p>`;
+                    break;
+                case 4: // Gelişim Kozası
+                case 14: // Kendini Organize Eden Gelişim
+                    html = `<div class="dev-cocoon">
+                                <div class="cocoon-silhouette"></div>
+                                <div class="data-stream" style="left: 30%; animation-duration: 1.5s;"></div>
+                                <div class="data-stream" style="left: 70%; animation-duration: 2.2s;"></div>
+                            </div><p>Zaman-bükümlü gelişim aktif.</p>`;
+                    break;
+                case 5: // Uyanış
+                case 15: // İlk Temas
+                    html = `<div class="dev-cocoon" style="animation:none; background: transparent;">
+                                <div class="cocoon-silhouette" style="animation: awake 3s forwards; opacity: 0;"></div>
+                            </div>
+                            <p>Bilinç entegrasyonu tamamlandı. Uyanış...</p>
+                            @keyframes awake { to { opacity: 1; background: white; box-shadow: 0 0 20px white; }}`;
+                    break;
+                default:
+                    html = `<p>Sistem beklemede...</p>`;
+            }
+
+            visualArea.innerHTML = html;
+        }
+
+    </script>
+</body>
+</html>

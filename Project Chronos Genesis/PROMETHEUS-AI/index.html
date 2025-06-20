@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROMETHEUS-AI | De-Novo Gen Tasarım Arayüzü</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+</head>
+<body>
+    <div class="scanline-overlay"></div>
+    <div id="container">
+        <header>
+            <h1>PROMETHEUS-AI</h1>
+            <p class="subtitle">Yaratıcı ve Rasyonel Organizma Sentezi için Yapay Zeka</p>
+            <div class="formula">
+                Optimize(G<sub>yeni</sub>) → max(Fonksiyon<sub>hedef</sub> | Ω<sub>konak</sub>)
+            </div>
+        </header>
+
+        <main id="main-interface">
+            <div id="control-panel" class="panel">
+                <h2>1. Görev Tanımlama</h2>
+                <label for="target-function">Hedef Fonksiyon:</label>
+                <input type="text" id="target-function" value="mavi renk pigmenti (phycocyanin benzeri) üretimi" placeholder="Örn: Kanserli hücreleri hedef alan bir protein">
+                <button id="start-simulation-btn">Sentezi Başlat</button>
+            </div>
+
+            <div id="simulation-stages" class="hidden">
+                <div id="stage-synthesis" class="panel stage-panel">
+                    <h3>AŞAMA 1: YARATICI SENTEZ</h3>
+                    <p class="status-text" id="synthesis-status">GAN modelleri başlatılıyor...</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="synthesis-progress"></div>
+                    </div>
+                    <h4>Potansiyel Gen Dizilimi (Örnek):</h4>
+                    <pre id="gene-sequence-output">...</pre>
+                </div>
+
+                <div id="stage-evolution" class="panel stage-panel">
+                    <h3>AŞAMA 2: SANAL EVRİM</h3>
+                    <p class="status-text" id="evolution-status">Sanal hücre ortamı oluşturuluyor...</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="evolution-progress"></div>
+                    </div>
+                    <div id="cell-simulation-vis">
+                        <div class="cell-nucleus">Çekirdek</div>
+                    </div>
+                    <p>Milyonlarca gen varyantı toksisite, stabilite ve verimlilik açısından test ediliyor.</p>
+                </div>
+
+                <div id="stage-integration" class="panel stage-panel">
+                    <h3>AŞAMA 3: ENTEGRASYON PLANLAMA</h3>
+                    <p class="status-text" id="integration-status">Konak genom (GRCh38) analizi...</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="integration-progress"></div>
+                    </div>
+                    <h4>İnsan Genomu Entegrasyon Haritası:</h4>
+                    <div class="genome-map">
+                        <div class="chromosome">
+                            <div class="band"></div><div class="band alt"></div>
+                            <div class="band"></div><div class="band alt"></div>
+                            <div class="band insertion-point" id="insertion-point">
+                                <span class="tooltip">Entegrasyon Noktası: Chr 8, 8q24.21 (Güvenli Liman Bölgesi)</span>
+                            </div>
+                            <div class="band alt"></div><div class="band"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results-panel" class="panel hidden">
+                <h2>Sentez Tamamlandı: Sonuçlar</h2>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <h3>Tasarlanan Protein Yapısı</h3>
+                        <div id="protein-viewer" class="protein-viewer-container"></div>
+                    </div>
+                    <div class="result-item">
+                        <h3>Nihai Gen Kodu: G-Prometheus-MP7</h3>
+                        <pre id="final-gene-code"></pre>
+                        <h3>Özellikler</h3>
+                        <ul id="gene-properties">
+                            <!-- JS ile doldurulacak -->
+                        </ul>
+                    </div>
+                </div>
+                <button id="reset-btn">Yeni Simülasyon</button>
+            </div>
+
+        </main>
+        
+        <footer>
+            <div id="log-console" class="panel">
+                <div class="log-header">SİSTEM LOGLARI</div>
+                <div id="log-output">
+                    <p class="log-info">[PROMETHEUS-AI] Sistem Beklemede. Görev tanımlayın.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
