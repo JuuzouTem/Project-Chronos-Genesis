@@ -15,7 +15,6 @@
             --text-color: #e0e0e0;
             --border-glow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color), 0 0 15px var(--primary-color);
             --text-glow: 0 0 2px var(--primary-color);
-            /* BİRLEŞTİRME: Omega versiyonundan yeni renk değişkenleri eklendi */
             --success-color: #00ff7f;
             --warning-color: #f0e68c;
         }
@@ -101,7 +100,6 @@
             gap: 30px;
         }
         
-        /* BİRLEŞTİRME: Omega versiyonundan gelen .tool-button sınıfı için ortak stil */
         .model-button, .tool-button {
             width: 60%;
             padding: 20px;
@@ -115,7 +113,6 @@
             text-shadow: var(--text-glow);
         }
 
-        /* BİRLEŞTİRME: Omega versiyonundan gelen .tool-button için özel stiller */
         .tool-button {
             font-size: 1.2em;
             padding: 15px;
@@ -174,7 +171,6 @@
         #step-list li.active:hover { background-color: rgba(0, 240, 255, 0.2); }
         #step-list li.running::after { content: 'İŞLENİYOR...'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--primary-color); font-size: 0.8em; animation: blink 1s infinite; }
         
-        /* BİRLEŞTİRME: Omega'dan gelen güncellenmiş ve yeni durum stilleri */
         #step-list li.completed {
             border-left-color: var(--success-color);
             opacity: 0.8;
@@ -185,12 +181,12 @@
             border-left-color: #f00;
             opacity: 0.8;
             cursor: pointer;
-            text-decoration: none; /* Omega'da kaldırılmıştı, bu daha mantıklı */
+            text-decoration: none;
         }
         #step-list li.unlocked {
             border-left-color: var(--warning-color);
             text-decoration: none !important;
-            opacity: 1; /* Kilidi açılan adımın tam görünür olması için */
+            opacity: 1;
         }
         #step-list li.unlocked::before {
             content: '🔓';
@@ -218,7 +214,6 @@
 
         @keyframes blink { 50% { opacity: 0.5; } }
 
-        /* KORUMA: 2025 versiyonundan gelen tüm görsel simülasyon stilleri eksiksiz olarak korundu */
         .dna-helix { width: 50px; height: 150px; position: relative; animation: rotate 10s linear infinite; }
         .dna-helix .strand { width: 10px; height: 100%; background: var(--primary-color); border-radius: 5px; position: absolute; top: 0; left: 20px; }
         .dna-helix .strand:first-child { transform: translateX(-15px); }
@@ -274,7 +269,6 @@
     </div>
 
     <script>
-        // BİRLEŞTİRME: Omega versiyonundan gelen harici araç tanımlamaları
         const tools = {
             'PROMETHEUS-AI': { name: 'PROMETHEUS-AI', path: 'PROMETHEUS-AI/index.html' },
             'CERBERUS': { name: 'CERBERUS', path: 'CERBERUS/index.html' },
@@ -310,7 +304,6 @@
         let currentModel = null;
         let currentStepIndex = 0;
         let isSimulating = false;
-        // BİRLEŞTİRME: Omega versiyonundan gelen yeni global değişken
         let lastFailedStepIndex = -1; 
 
         const modelSelectionDiv = document.getElementById('model-selection');
@@ -322,7 +315,6 @@
         const simulationLog = document.getElementById('simulation-log');
         const resetButton = document.getElementById('reset-button');
         
-        // BİRLEŞTİRME: Omega versiyonundan gelen yeni olay dinleyici ve fonksiyon
         window.addEventListener('message', receiveToolResult, false);
 
         function receiveToolResult(event) {
@@ -348,12 +340,11 @@
 
         resetButton.addEventListener('click', resetSimulation);
 
-        // BİRLEŞTİRME: Omega versiyonundan gelen güncellenmiş fonksiyon
         function startSimulation(model) {
             currentModel = model;
             currentStepIndex = 0;
-            isSimulating = false; // Simülasyonu başlatırken her zaman false olmalı
-            projectData[model].forEach(step => step.unlockedByTool = false); // Kilitleri sıfırla
+            isSimulating = false;
+            projectData[model].forEach(step => step.unlockedByTool = false);
 
             modelSelectionDiv.style.display = 'none';
             simulationContainerDiv.style.display = 'flex';
@@ -363,12 +354,11 @@
             showInitialDetails();
         }
 
-        // BİRLEŞTİRME: Omega versiyonundan gelen güncellenmiş fonksiyon
         function resetSimulation() {
             currentModel = null;
             currentStepIndex = 0;
             isSimulating = false;
-            lastFailedStepIndex = -1; // Hata indeksini sıfırla
+            lastFailedStepIndex = -1;
             modelSelectionDiv.style.display = 'flex';
             simulationContainerDiv.style.display = 'none';
             stepList.innerHTML = '';
@@ -391,30 +381,25 @@
             });
         }
         
-        // KORUMA: 2025 versiyonunda olan bu fonksiyon, Omega'da atlanmıştı. Eksiksiz olması için korundu.
         function showInitialDetails() {
             const firstStep = projectData[currentModel][0];
             updateDetailsPanel(firstStep);
             updateVisualSimulation(0, 'idle');
         }
 
-        // BİRLEŞTİRME: Omega versiyonundan gelen güncellenmiş fonksiyon
         function handleStepClick(index) {
             const stepItem = stepList.children[index];
-            if (isSimulating) return; // Simülasyon çalışıyorsa işlem yapma
+            if (isSimulating) return;
 
             if (!stepItem.classList.contains('active')) {
                 simulationLog.textContent = `HATA: ${stepItem.textContent} şu anda aktif değil. Lütfen sıradaki adımı takip edin.`;
-                // Tıklanan ama aktif olmayan adımın detayını yine de gösterelim
                 updateDetailsPanel(projectData[currentModel][index]);
                 return;
             }
-            // Tıklandığında çalıştırmadan önce detayları göster
             updateDetailsPanel(projectData[currentModel][index]);
             runSimulationStep(index);
         }
         
-        // BİRLEŞTİRME: Omega versiyonundan gelen, araç mantığını içeren güncellenmiş fonksiyon
         function runSimulationStep(index) {
             isSimulating = true;
             const stepData = projectData[currentModel][index];
@@ -439,17 +424,17 @@
                     currentStepIndex++;
                     if (currentStepIndex < projectData[currentModel].length) {
                         stepList.children[currentStepIndex].classList.add('active');
-                        updateDetailsPanel(projectData[currentModel][currentStepIndex]); // Sonraki adımın detaylarını göster
+                        updateDetailsPanel(projectData[currentModel][currentStepIndex]);
                     } else {
                         simulationLog.textContent = 'TÜM PROJE AŞAMALARI TAMAMLANDI. SİMÜLASYON SONA ERDİ.';
                     }
                 } else {
                     stepItem.classList.add('failed');
-                    lastFailedStepIndex = index; // Hata veren adımı kaydet
+                    lastFailedStepIndex = index;
 
                     if (stepData.tool) {
                         simulationLog.textContent = `SİMÜLASYON BAŞARISIZ! [${stepData.title}] - Gerçeklik Yüzdesi (%${stepData.reality}) aşılamadı. ${stepData.tool.name} aracını kullanarak bu teknolojik engeli aşabilirsiniz.`;
-                        updateDetailsPanel(stepData); // Butonu göstermek için paneli güncelle
+                        updateDetailsPanel(stepData);
                     } else {
                         simulationLog.textContent = `SİMÜLASYON BAŞARISIZ! [${stepData.title}] - Bu adım için harici bir çözüm aracı bulunmuyor. Sistem durduruldu.`;
                     }
@@ -460,7 +445,6 @@
             }, stepData.duration);
         }
 
-        // BİRLEŞTİRME: Omega versiyonundan gelen, araç butonu ekleme mantığını içeren güncellenmiş fonksiyon
         function updateDetailsPanel(stepData) {
             const stepIndex = projectData[currentModel].findIndex(s => s.id === stepData.id);
             detailsContent.innerHTML = `
@@ -493,7 +477,6 @@
                 toolButton.className = 'tool-button';
                 toolButton.textContent = `${stepData.tool.name} Aracını Başlat`;
                 toolButton.onclick = () => {
-                    // GitHub Pages'de doğru çalışması için göreceli yol kullanılıyor
                     window.open(stepData.tool.path, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
                     simulationLog.textContent = `${stepData.tool.name} aracı yeni bir pencerede başlatıldı. Lütfen oradaki prosedürü tamamlayın.`;
                 };
@@ -501,7 +484,6 @@
             }
         }
         
-        // KORUMA: 2025 versiyonundan gelen bu kritik fonksiyon, Omega'da atlanmıştı. Görsellerin çalışması için eksiksiz olarak korundu.
         function updateVisualSimulation(stepId, status) {
             visualArea.innerHTML = '';
             let html = '';
@@ -564,5 +546,6 @@
     </script>
 </body>
 </html>
+
 
 
